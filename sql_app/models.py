@@ -10,14 +10,16 @@ class User(Base):
     hashed_password = Column(String)
     is_active = Column(Boolean, default=True)
 
-    items = relationship("Item", back_populates="owner")
+    passwords = relationship("Password", back_populates="owner")
 
-class Item(Base):
-    __tablename__ = "items"
+class Password(Base):
+    __tablename__ = "passwords"
 
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, index=True)
-    description = Column(String, index=True)
+    name = Column(String, index=True)
+    password = Column(String, index=True)
+    email = Column(String, index=True)
+    username = Column(String, index=True)
     owner_id = Column(Integer, ForeignKey("users.id"))
 
-    owner = relationship("User", back_populates="items")
+    owner = relationship("User", back_populates="passwords")

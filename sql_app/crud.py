@@ -20,12 +20,12 @@ def create_user(db: Session, user: schemas.UserCreate):
     db.refresh(db_user)
     return db_user
 
-def get_items(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Item).offset(skip).limit(limit).all()
+def get_passwords(db: Session, password_name: str):
+    return db.query(models.Password).filter(models.Password.name == password_name).all()
 
-def create_user_item(db: Session, item: schemas.ItemCreate, user_id: int):
-    db_item = models.Item(**item.dict(), owner_id=user_id)
-    db.add(db_item)
+def create_user_password(db: Session, password: schemas.PasswordCreate, user_id: int):
+    db_password = models.Password(**password.dict(), owner_id=user_id)
+    db.add(db_password)
     db.commit()
-    db.refresh(db_item)
-    return db_item
+    db.refresh(db_password)
+    return db_password

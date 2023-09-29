@@ -1,13 +1,16 @@
 from pydantic import BaseModel
 
-class ItemBase(BaseModel):
-    title: str
-    description: str | None = None
+class PasswordBase(BaseModel):
+    name: str
+    password: str
+    email: str
+    username: str | None = None
 
-class ItemCreate(ItemBase):
+
+class PasswordCreate(PasswordBase):
     pass
 
-class Item(ItemBase):
+class Password(PasswordBase):
     id: int
     owner_id: int
 
@@ -21,7 +24,7 @@ class UserBase(BaseModel):
 class User(UserBase):
     id: int
     is_active: bool
-    items: list[Item] = []
+    passwords: list[Password] = []
 
     class Config:
         orm_mode = True
