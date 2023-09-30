@@ -51,8 +51,8 @@ async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: 
 
 @app.get("/users/me")
 async def read_users_me(current_user: Annotated[User, Depends(get_current_user)]):
+    print(current_user)
     return current_user
-
 
 @app.post("/users/", response_model=schemas.User)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
@@ -71,13 +71,12 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
 
 
 @app.post("/users/{user_id}/passwords/", response_model=schemas.Password)
-def create_password_for_user(
-    user_id: int, password: schemas.PasswordCreate, db: Session = Depends(get_db)
-):
+def create_password_for_user(current_user: Annotated[User, Depends(get_current_user)], user_id: int, password: schemas.PasswordCreate, db: Session = Depends(get_db)):
     return crud.create_user_password(db=db, password=password, user_id=user_id)
 
 
 @app.get("/passwords/", response_model=list[schemas.Password])
-def read_passwords(password_name: str, db: Session = Depends(get_db)):
-    passwords = crud.get_passwords(db, password_name)
-    return passwords
+def read_passwords(current_user: Annotated[User, Depends(get_current_user)], password_name: str, db: Session = Depends(get_db)):
+    user = crud.get_user_by_email(db, email=current_user)
+    password = crud.get_passwords(db, password_name=password_name, user_id=user.id)
+    return password
