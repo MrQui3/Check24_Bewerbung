@@ -1,6 +1,7 @@
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
-
+from fastapi.security import OAuth2PasswordBearer
+from typing import Annotated
 from . import schemas
 from sql_app import models, crud
 from sql_app.database import SessionLocal, engine
@@ -9,8 +10,8 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-# Dependency
 def get_db():
     db = SessionLocal()
     try:
@@ -18,6 +19,10 @@ def get_db():
     finally:
         db.close()
 
+
+@app.get("/items/")
+async def read_items(token: str = Depends(oauth2_scheme)):
+    return {"token": token}
 
 @app.post("/users/", response_model=schemas.User)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
