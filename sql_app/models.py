@@ -10,7 +10,6 @@ class User(Base):
     hashed_password = Column(String)
     is_active = Column(Boolean, default=True)
 
-    passwords = relationship("Password", back_populates="owner")
 
 class Password(Base):
     __tablename__ = "passwords"
@@ -22,4 +21,3 @@ class Password(Base):
     username = Column(String, index=True)
     owner_id = Column(Integer, ForeignKey("users.id"))
 
-    owner = relationship("User", back_populates="passwords")

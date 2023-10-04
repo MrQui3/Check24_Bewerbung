@@ -21,6 +21,8 @@ def get_db():
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 class User(BaseModel):
     username: str
     email: str | None = None
@@ -36,14 +38,13 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         )
     return user
 
-#test
+
 @app.post("/token")
 async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: Session = Depends(get_db)):
     user = crud.get_user_by_email(db, email=form_data.username)
     if not user:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
-    hashed_password = form_data.password
-    if not hashed_password == user.hashed_password:
+    if not pwd_context.verify(form_data.password, user.hashed_password):
         raise HTTPException(status_code=400, detail="Incorrect username or password")
 
     return {"access_token": user.email, "token_type": "bearer"}
@@ -53,7 +54,7 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user = crud.get_user_by_email(db, email=user.email)
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
-    return crud.create_user(db=db, user=user)
+    return crud.create_user(db=db, user=user, password=pwd_context.hash(user.password))
 
 @app.post("/users/{user_id}/passwords/", response_model=schemas.Password)
 def create_password_for_user(current_user: Annotated[User, Depends(get_current_user)], password: schemas.PasswordCreate, db: Session = Depends(get_db)):
