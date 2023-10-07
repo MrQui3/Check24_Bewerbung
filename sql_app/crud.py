@@ -21,9 +21,10 @@ def create_user(db: Session, user: schemas.UserCreate, password: str):
     return db_user
 
 
-#Looking for the name of the password AND the owner of the password(or and are reversed, don't know why)
+
 def get_passwords(db: Session, password_name: str, user_id: int):
-    return db.query(models.Password).filter(models.Password.name == password_name or models.Password.owner_id == user_id).all()
+    return db.query(models.Password).filter(
+        models.Password.name == password_name and models.Password.owner_id == user_id).all()
 
 def create_user_password(db: Session, password: schemas.PasswordCreate, user_id: int):
     db_password = models.Password(**password.dict(), owner_id=user_id)

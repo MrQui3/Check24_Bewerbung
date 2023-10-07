@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 class PasswordBase(BaseModel):
     name: str
-    password: str
+    password: bytes
     email: str
     username: str | None = None
 

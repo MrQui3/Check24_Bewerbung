@@ -1,6 +1,6 @@
 from sql_app.database import Base
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy import LargeBinary
 
 class User(Base):
     __tablename__ = "users"
@@ -16,7 +16,7 @@ class Password(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
-    password = Column(String, index=True)
+    password = Column(LargeBinary, index=True)
     email = Column(String, index=True)
     username = Column(String, index=True)
     owner_id = Column(Integer, ForeignKey("users.id"))
