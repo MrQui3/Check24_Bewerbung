@@ -1,5 +1,7 @@
 a = "test sting"
-b = 'test sting a'
+b = 'test stin'
 
-if (b in a or a in b):
+if a in b or b in a:
     print(True)
+else:
+    print(False)

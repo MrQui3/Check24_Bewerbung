@@ -24,12 +24,19 @@ def create_user(db: Session, user: schemas.UserCreate, password: str):
 
 def get_passwords(db: Session, password_name: str, user_id: int):
     return db.query(models.Password).filter(
-        (
-                    models.Password.name is password_name or password_name is models.Password.name) and models.Password.owner_id == user_id).all()
+        models.Password.name == password_name and models.Password.owner_id == user_id).all()
 
 def create_user_password(db: Session, password: schemas.PasswordCreate, user_id: int):
     db_password = models.Password(**password.dict(), owner_id=user_id)
     db.add(db_password)
     db.commit()
     db.refresh(db_password)
+    return db_password
+
+
+def delete_user_password(db: Session, password_name: str, user_id: int):
+    db_password = db.query(models.Password).filter(
+        models.Password.name == password_name and models.Password.owner_id == user_id).first()
+    db.delete(db_password)
+    db.commit()
     return db_password

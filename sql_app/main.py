@@ -82,8 +82,17 @@ def create_password_for_user(current_user: Annotated[User, Depends(get_current_u
     return crud.create_user_password(db=db, password=password, user_id=user.id)
 
 
+@app.post("/passwords/")
+def delete_password_for_user(current_user: Annotated[User, Depends(get_current_user)], password_name: str,
+                             db: Session = Depends(get_db)):
+    user = crud.get_user_by_email(db, email=str(current_user))
+    password_name = password_name.lower()
+    password_name = password_name.strip()
+    return crud.delete_user_password(db=db, password_name=password_name, user_id=user.id)
+
 @app.get("/passwords/")
-def read_passwords(current_user: Annotated[User, Depends(get_current_user)], password_name: str, db: Session = Depends(get_db)):
+def read_passwords(current_user: Annotated[User, Depends(get_current_user)], password_name: str,
+                   db: Session = Depends(get_db)):
     user = crud.get_user_by_email(db, email=str(current_user))
     password_name = password_name.lower()
     password_name = password_name.strip()
