@@ -28,7 +28,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-key = b'0123456789abcdef'
+key = b''
 nonce = b'\xd1\xbb\xed\xbe`O\x8es\t\xad\xff \xe3\xcb}$'
 
 
@@ -61,10 +61,6 @@ async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: 
     return {"access_token": user.email, "token_type": "bearer"}
 
 
-@app.get("/testdecrypt")
-def testing_decryption(current_user: Annotated[User, Depends(get_current_user)], password: str):
-    return 0
-
 
 @app.post("/users/", response_model=schemas.User)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
@@ -81,12 +77,16 @@ def create_password_for_user(current_user: Annotated[User, Depends(get_current_u
     cipher = AES.new(key, AES.MODE_EAX, nonce=nonce)
     password.password = cipher.encrypt(password.password.encode("utf-8"))
     password.password = binascii.b2a_hex(password.password).decode("utf-8").strip()
+    password.name = password.name.strip()
+    password.name = password.name.lower()
     return crud.create_user_password(db=db, password=password, user_id=user.id)
 
 
 @app.get("/passwords/")
 def read_passwords(current_user: Annotated[User, Depends(get_current_user)], password_name: str, db: Session = Depends(get_db)):
     user = crud.get_user_by_email(db, email=str(current_user))
+    password_name = password_name.lower()
+    password_name = password_name.strip()
     passwords = crud.get_passwords(db, password_name=password_name, user_id=user.id)
     for password in passwords:
         password.password = binascii.a2b_hex(password.password)
