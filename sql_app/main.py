@@ -8,7 +8,7 @@ from typing import Annotated
 from pydantic import BaseModel
 from passlib.context import CryptContext
 from Crypto.Cipher import AES
-from Crypto.Random import get_random_bytes
+import binascii
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -27,9 +27,8 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-key = get_random_bytes(16)
-encryption_cipher = AES.new(key, AES.MODE_EAX)
-decryption_cipher = AES.new(key, AES.MODE_EAX, nonce=encryption_cipher.nonce)
+key = b'0123456789abcdef'
+nonce = b'\xd1\xbb\xed\xbe`O\x8es\t\xad\xff \xe3\xcb}$'
 
 
 class User(BaseModel):
@@ -76,8 +75,9 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
 def create_password_for_user(current_user: Annotated[User, Depends(get_current_user)], password: schemas.PasswordCreate,
                              db: Session = Depends(get_db)):
     user = crud.get_user_by_email(db, email=str(current_user))
-    n = encryption_cipher.encrypt(password.password)
-    password.password = n
+    cipher = AES.new(key, AES.MODE_EAX, nonce=nonce)
+    password.password = cipher.encrypt(password.password.encode("utf-8"))
+    password.password = binascii.b2a_hex(password.password).decode("utf-8").strip()
     return crud.create_user_password(db=db, password=password, user_id=user.id)
 
 
@@ -86,5 +86,7 @@ def read_passwords(current_user: Annotated[User, Depends(get_current_user)], pas
     user = crud.get_user_by_email(db, email=str(current_user))
     passwords = crud.get_passwords(db, password_name=password_name, user_id=user.id)
     for password in passwords:
-        print(decryption_cipher.decrypt(password.password))
-        return password.password
+        password.password = binascii.a2b_hex(password.password)
+        cipher = AES.new(key, AES.MODE_EAX, nonce=nonce)
+        password.password = str(cipher.decrypt(password.password))
+    return passwords
