@@ -1,8 +1,5 @@
-from sql_app.database import Base
+from backend.database import Base
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
-from sqlalchemy import LargeBinary
-from sqlalchemy.dialects.mysql import VARCHAR
-
 class User(Base):
     __tablename__ = "users"
 
