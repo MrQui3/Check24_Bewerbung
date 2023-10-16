@@ -1,8 +1,9 @@
 from fastapi import Depends, FastAPI, HTTPException, status
 from sqlalchemy.orm import Session
-from . import schemas
-from backend import models, crud
-from backend.database import SessionLocal, engine
+import schemas
+import models
+import crud
+from database import SessionLocal, engine
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from typing import Annotated
 from pydantic import BaseModel
