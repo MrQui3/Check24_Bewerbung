@@ -109,7 +109,9 @@ def read_passwords(current_user: Annotated[User, Depends(get_current_user)], pas
 
 '''
 
+from fastapi import FastAPI
 
+app = FastAPI()
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
