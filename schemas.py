@@ -4,7 +4,7 @@ class PasswordBase(BaseModel):
     name: str
     password: str
     email: str
-    username: str | None = None
+    username: str
 
 
 class PasswordCreate(PasswordBase):

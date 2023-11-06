@@ -35,7 +35,7 @@ nonce = b'\xd1\xbb\xed\xbe`O\x8es\t\xad\xff \xe3\xcb}$'
 
 class User(BaseModel):
     username: str
-    email: str | None = None
+    email: str
 
 
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
