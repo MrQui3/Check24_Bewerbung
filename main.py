@@ -32,6 +32,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 key = b''
 nonce = b'\xd1\xbb\xed\xbe`O\x8es\t\xad\xff \xe3\xcb}$'
 
+'''
 
 class User(BaseModel):
     username: str
@@ -103,3 +104,10 @@ def read_passwords(current_user: Annotated[User, Depends(get_current_user)], pas
         cipher = AES.new(key, AES.MODE_EAX, nonce=nonce)
         password.password = str(cipher.decrypt(password.password).decode())
     return passwords
+
+'''
+
+
+@app.get("/")
+async def root():
+    return {"message": "Hello World"}
