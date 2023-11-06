@@ -1,4 +1,6 @@
 from fastapi import Depends, FastAPI, HTTPException, status
+
+'''
 from sqlalchemy.orm import Session
 import schemas
 import models
@@ -32,7 +34,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 key = b''
 nonce = b'\xd1\xbb\xed\xbe`O\x8es\t\xad\xff \xe3\xcb}$'
 
-'''
+
 
 class User(BaseModel):
     username: str
