@@ -1,8 +1,7 @@
 from fastapi import Depends, FastAPI, HTTPException, status
-
-'''
 from sqlalchemy.orm import Session
 import schemas
+
 import models
 import crud
 from database import SessionLocal, engine
@@ -115,3 +114,4 @@ app = FastAPI()
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
+    '''
