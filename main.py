@@ -51,20 +51,6 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     return user
 
 
-@app.post("/token")
-async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: Session = Depends(get_db)):
-    global key
-    user = crud.get_user_by_email(db, email=form_data.username)
-    if not user:
-        raise HTTPException(status_code=400, detail="Incorrect username or password")
-    if not pwd_context.verify(form_data.password, user.hashed_password):
-        raise HTTPException(status_code=400, detail="Incorrect username or password")
-    key = pbkdf2_hmac("sha256", form_data.password.encode(), form_data.username.encode(), 100000, 16)
-
-    return {"access_token": user.email, "token_type": "bearer"}
-
-
-
 @app.post("/users/", response_model=schemas.User)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user = crud.get_user_by_email(db, email=user.email)
@@ -105,13 +91,3 @@ def read_passwords(current_user: Annotated[User, Depends(get_current_user)], pas
         cipher = AES.new(key, AES.MODE_EAX, nonce=nonce)
         password.password = str(cipher.decrypt(password.password).decode())
     return passwords
-
-'''
-
-from fastapi import FastAPI
-
-app = FastAPI()
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-    '''
