@@ -1,17 +1,17 @@
-from fastapi import Depends, FastAPI, HTTPException, status
-from sqlalchemy.orm import Session
-import schemas
-
-import models
-import crud
-from database import SessionLocal, engine
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from typing import Annotated
-from pydantic import BaseModel
-from passlib.context import CryptContext
-from Crypto.Cipher import AES
 import binascii
-from backports.pbkdf2 import pbkdf2_hmac
+from typing import Annotated
+
+from Crypto.Cipher import AES
+from fastapi import Depends, FastAPI, HTTPException, status, Request, APIRouter
+from fastapi.security import OAuth2PasswordBearer
+from passlib.context import CryptContext
+from pydantic import BaseModel
+from sqlalchemy.orm import Session
+
+import crud
+import models
+import schemas
+from database import SessionLocal, engine
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -27,12 +27,10 @@ def get_db():
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 key = b''
 nonce = b'\xd1\xbb\xed\xbe`O\x8es\t\xad\xff \xe3\xcb}$'
-
 
 
 class User(BaseModel):
