@@ -2,11 +2,12 @@ import binascii
 from typing import Annotated
 
 from Crypto.Cipher import AES
-from fastapi import Depends, FastAPI, HTTPException, status, Request, APIRouter
+from fastapi import Depends, FastAPI, HTTPException, status, Request
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
+from fastapi.middleware.cors import CORSMiddleware
 
 import crud
 import models
@@ -24,6 +25,20 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+origins = [
+    "http://localhost:63342",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -49,12 +64,19 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     return user
 
 
+@app.post("/test/")
+async def root(request: schemas.UserCreate):
+    return 'worked'
+
+
+
 @app.post("/users/", response_model=schemas.User)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user = crud.get_user_by_email(db, email=user.email)
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
-    return crud.create_user(db=db, user=user, password=pwd_context.hash(user.password))
+    crud.create_user(db=db, user=user, password=pwd_context.hash(user.password))
+    return 'worked'
 
 
 @app.post("/users/{user_id}/passwords/", response_model=schemas.Password)
@@ -69,7 +91,7 @@ def create_password_for_user(current_user: Annotated[User, Depends(get_current_u
     return crud.create_user_password(db=db, password=password, user_id=user.id)
 
 
-@app.post("/passwords/")
+@app.post("/passwordsdelte/")
 def delete_password_for_user(current_user: Annotated[User, Depends(get_current_user)], password_name: str,
                              db: Session = Depends(get_db)):
     user = crud.get_user_by_email(db, email=str(current_user))
