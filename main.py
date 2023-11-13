@@ -1,9 +1,10 @@
 import binascii
+from hashlib import pbkdf2_hmac
 from typing import Annotated
 
 from Crypto.Cipher import AES
 from fastapi import Depends, FastAPI, HTTPException, status, Request
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from passlib.context import CryptContext
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -69,6 +70,17 @@ async def root(request: schemas.UserCreate):
     return 'worked'
 
 
+@app.post("/token")
+async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: Session = Depends(get_db)):
+    global key
+    user = crud.get_user_by_email(db, email=form_data.username)
+    if not user:
+        raise HTTPException(status_code=400, detail="Incorrect username or password")
+    if not pwd_context.verify(form_data.password, user.hashed_password):
+        raise HTTPException(status_code=400, detail="Incorrect username or password")
+    key = pbkdf2_hmac("sha256", form_data.password.encode(), form_data.username.encode(), 100000, 16)
+
+    return {"access_token": user.email, "token_type": "bearer"}
 
 @app.post("/users/", response_model=schemas.User)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
