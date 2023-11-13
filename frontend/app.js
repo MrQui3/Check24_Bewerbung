@@ -94,11 +94,27 @@ function AccountCreateClick() {
     }
 
     if (everything_right) {
-        //Fast-Api
+        fetch('http://127.0.0.1:8000/users/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                'email': 'foo',
+                'password': 'Adf'
+            })
+        })
+            .then(resp => resp.json())
+            .then(data => {
+                console.log(data);
+            });
     }
 }
 
 function LoginClick() {
+
+    everything_right = true
+
     if (document.getElementById('floatingLoginEmail').value === '') {
         document.getElementById("floatingLoginEmail").classList.add('is-invalid');
         everything_right = false
@@ -120,6 +136,21 @@ function LoginClick() {
     }
 
     if (everything_right) {
+        fetch('http://127.0.0.1:8000/users/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                'email': 'foo',
+                'password': 'Adf'
+            })
+        })
+            .then(resp => resp.json())
+            .then(data => {
+                console.log(data);
+            });
+
 
     }
 }
