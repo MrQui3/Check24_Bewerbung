@@ -1,3 +1,7 @@
+let key = ''
+let token = ''
+
+
 function PasswordCreateClick() {
 
     everything_right = true
@@ -43,8 +47,30 @@ function PasswordCreateClick() {
     }
 
     if (everything_right) {
-        //Fast-Api
     }
+
+
+    fetch('http://127.0.0.1:8000/users/passwords/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer string'
+        },
+        body: JSON.stringify({
+            'name': 'asdfasdf',
+            'password': "asdf",
+            'email': "asdf",
+            'username': "asdf"
+        })
+
+
+    })
+        .then(resp => resp.json())
+        .then(data => {
+            console.log(data);
+        });
+
+
 
 }
 
@@ -53,9 +79,22 @@ function PasswordGetClick() {
     if (document.getElementById('floatingPassswordName').value === '')
         document.getElementById("floatingPassswordName").classList.add('is-invalid');
     else {
-        if (document.getElementById('floatingPassswordName').classList.contains('is-invalid'))
+        if (document.getElementById('floatingPassswordName').classList.contains('is-invalid')) {
+        }
             document.getElementById('floatingPassswordName').classList.remove('is-invalid')
-        //Fast-Api
+
+        fetch('http://127.0.0.1:8000/test/?password_name=' + document.getElementById('floatingPassswordName').value + '&key=' + key, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            }
+
+        })
+            .then(resp => resp.json())
+            .then(data => {
+                console.log(data);
+            });
     }
 }
 
@@ -100,13 +139,34 @@ function AccountCreateClick() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                'email': 'foo',
-                'password': 'Adf'
+                'email': document.getElementById('floatingSignupEmail').value,
+                'password': document.getElementById('floatingSignupPassword').value,
             })
         })
             .then(resp => resp.json())
             .then(data => {
-                console.log(data);
+                console.log('signed up')
+
+
+                fetch('http://127.0.0.1:8000/token', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams({
+                        'username': document.getElementById('floatingSignupEmail').value,
+                        'password': document.getElementById('floatingSignupPassword').value,
+                    })
+                })
+                    .then(resp => resp.json())
+                    .then(data => {
+                        key = data['key'].substring(2, data['key'].length - 1)
+                        token = data['access_token']
+                        console.log('logged in')
+                    });
+
+
+
             });
     }
 }
@@ -136,19 +196,21 @@ function LoginClick() {
     }
 
     if (everything_right) {
-        fetch('http://127.0.0.1:8000/users/', {
+        fetch('http://127.0.0.1:8000/token', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: JSON.stringify({
-                'email': 'foo',
-                'password': 'Adf'
+            body: new URLSearchParams({
+                'username': document.getElementById('floatingLoginEmail').value,
+                'password': document.getElementById('floatingLoginPasssword').value,
             })
         })
             .then(resp => resp.json())
             .then(data => {
-                console.log(data);
+                key = data['key'].substring(2, data['key'].length - 1)
+                token = data['access_token']
+                console.log('logged in')
             });
 
 
