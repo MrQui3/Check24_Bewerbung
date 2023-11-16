@@ -1,4 +1,4 @@
-let key = ''
+let key = []
 let token = ''
 
 
@@ -83,14 +83,14 @@ function PasswordGetClick() {
         }
             document.getElementById('floatingPassswordName').classList.remove('is-invalid')
 
-        fetch('http://127.0.0.1:8000/test/?password_name=' + document.getElementById('floatingPassswordName').value + '&key=' + key, {
+        fetch('http://127.0.0.1:8000/passwords/?password_name=' + document.getElementById('floatingPassswordName').value + '&key=' + key, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + token
             }
-
         })
+
             .then(resp => resp.json())
             .then(data => {
                 console.log(data);
@@ -160,9 +160,9 @@ function AccountCreateClick() {
                 })
                     .then(resp => resp.json())
                     .then(data => {
-                        key = data['key'].substring(2, data['key'].length - 1)
                         token = data['access_token']
-                        console.log('logged in')
+                        key = data['key']
+                        console.log('signed up')
                     });
 
 
@@ -208,9 +208,10 @@ function LoginClick() {
         })
             .then(resp => resp.json())
             .then(data => {
-                key = data['key'].substring(2, data['key'].length - 1)
+                console.log(data);
                 token = data['access_token']
                 console.log('logged in')
+                key = data['key']
             });
 
 

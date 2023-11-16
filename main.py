@@ -62,18 +62,9 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
 
 
 @app.post("/test/")
-async def root(current_user: Annotated[User, Depends(get_current_user)], password_name: str, key: bytes,
+async def root(current_user: Annotated[User, Depends(get_current_user)], password_name: str, key: str,
                db: Session = Depends(get_db)):
-    print(bytes(key))
-    user = crud.get_user_by_email(db, email=str(current_user))
-    password_name = password_name.lower()
-    password_name = password_name.strip()
-    passwords = crud.get_passwords(db, password_name=password_name, user_id=user.id)
-    for password in passwords:
-        password.password = binascii.a2b_hex(password.password)
-        cipher = AES.new(key, AES.MODE_EAX, nonce=nonce)
-        password.password = str(cipher.decrypt(password.password).decode())
-    return passwords
+    return 'worked'
 
 
 @app.post("/token")
@@ -84,8 +75,9 @@ async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: 
     if not pwd_context.verify(form_data.password, user.hashed_password):
         raise HTTPException(status_code=400, detail="Incorrect username or password")
     key = pbkdf2_hmac("sha256", form_data.password.encode(), form_data.username.encode(), 100000, 16)
-    print(key)
-    return {"access_token": user.email, "token_type": "bearer", 'key': str(key)}
+    key = list(key)
+    key = ' '.join(str(e) for e in key)
+    return {"access_token": user.email, "token_type": "bearer", 'key': key}
 
 @app.post("/users/", response_model=schemas.User)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
@@ -97,10 +89,14 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
 
 @app.post("/users/passwords/", response_model=schemas.Password)
 def create_password_for_user(current_user: Annotated[User, Depends(get_current_user)], password: schemas.PasswordCreate,
-                             key: bytes,
-                             db: Session = Depends(get_db)):
+                             key: str, db: Session = Depends(get_db)):
+    b_key = []
+    for i in key.split():
+        b_key.append(int(i))
+
+
     user = crud.get_user_by_email(db, email=str(current_user))
-    cipher = AES.new(key, AES.MODE_EAX, nonce=nonce)
+    cipher = AES.new(b_key, AES.MODE_EAX, nonce=nonce)
     password.password = cipher.encrypt(password.password.encode("utf-8"))
     password.password = binascii.b2a_hex(password.password).decode("utf-8").strip()
     password.name = password.name.strip()
@@ -116,15 +112,20 @@ def delete_password_for_user(current_user: Annotated[User, Depends(get_current_u
     password_name = password_name.strip()
     return crud.delete_user_password(db=db, password_name=password_name, user_id=user.id)
 
-@app.get("/passwords/")
-def read_passwords(current_user: Annotated[User, Depends(get_current_user)], password_name: str, key: bytes,
+
+@app.post("/passwords/")
+def read_passwords(current_user: Annotated[User, Depends(get_current_user)], password_name: str, key: str,
                    db: Session = Depends(get_db)):
+    b_key = []
+    for i in key.split():
+        b_key.append(int(i))
+
     user = crud.get_user_by_email(db, email=str(current_user))
     password_name = password_name.lower()
     password_name = password_name.strip()
     passwords = crud.get_passwords(db, password_name=password_name, user_id=user.id)
     for password in passwords:
         password.password = binascii.a2b_hex(password.password)
-        cipher = AES.new(key, AES.MODE_EAX, nonce=nonce)
+        cipher = AES.new(bytes(b_key), AES.MODE_EAX, nonce=nonce)
         password.password = str(cipher.decrypt(password.password).decode())
     return passwords
