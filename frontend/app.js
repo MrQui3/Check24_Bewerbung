@@ -50,17 +50,17 @@ function PasswordCreateClick() {
     }
 
 
-    fetch('http://127.0.0.1:8000/users/passwords/', {
+    fetch('http://127.0.0.1:8000/users/passwords/?key=' + key, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer string'
+            'Authorization': 'Bearer ' + token
         },
         body: JSON.stringify({
-            'name': 'asdfasdf',
-            'password': "asdf",
-            'email': "asdf",
-            'username': "asdf"
+            'name': document.getElementById('floatingNameCreate').value,
+            'password': document.getElementById('floatingPasswordCreate').value,
+            'email': document.getElementById('floatingEmailCreate').value,
+            'username': document.getElementById('floatingUsernameCreate').value
         })
 
 
@@ -104,7 +104,18 @@ function PasswordDelClick() {
     else {
         if (document.getElementById('floatingDeletingName').classList.contains('is-invalid'))
             document.getElementById('floatingDeletingName').classList.remove('is-invalid')
-        //Fast-Api
+        fetch('http://127.0.0.1:8000/password_delete/?password_name=' + document.getElementById('floatingDeletingName').value, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            }
+        })
+
+            .then(resp => resp.json())
+            .then(data => {
+                console.log('password_deleted');
+            });
     }
 }
 
@@ -162,7 +173,6 @@ function AccountCreateClick() {
                     .then(data => {
                         token = data['access_token']
                         key = data['key']
-                        console.log('signed up')
                     });
 
 
@@ -208,7 +218,6 @@ function LoginClick() {
         })
             .then(resp => resp.json())
             .then(data => {
-                console.log(data);
                 token = data['access_token']
                 console.log('logged in')
                 key = data['key']

@@ -62,9 +62,12 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
 
 
 @app.post("/test/")
-async def root(current_user: Annotated[User, Depends(get_current_user)], password_name: str, key: str,
+async def root(current_user: Annotated[User, Depends(get_current_user)], password_name: str,
                db: Session = Depends(get_db)):
-    return 'worked'
+    user = crud.get_user_by_email(db, email=str(current_user))
+    password_name = password_name.lower()
+    password_name = password_name.strip()
+    return crud.delete_user_password(db=db, password_name=password_name, user_id=user.id)
 
 
 @app.post("/token")
@@ -96,7 +99,7 @@ def create_password_for_user(current_user: Annotated[User, Depends(get_current_u
 
 
     user = crud.get_user_by_email(db, email=str(current_user))
-    cipher = AES.new(b_key, AES.MODE_EAX, nonce=nonce)
+    cipher = AES.new(bytes(b_key), AES.MODE_EAX, nonce=nonce)
     password.password = cipher.encrypt(password.password.encode("utf-8"))
     password.password = binascii.b2a_hex(password.password).decode("utf-8").strip()
     password.name = password.name.strip()
@@ -104,7 +107,7 @@ def create_password_for_user(current_user: Annotated[User, Depends(get_current_u
     return crud.create_user_password(db=db, password=password, user_id=user.id)
 
 
-@app.post("/passwordsdelte/")
+@app.post("/password_delete/")
 def delete_password_for_user(current_user: Annotated[User, Depends(get_current_user)], password_name: str,
                              db: Session = Depends(get_db)):
     user = crud.get_user_by_email(db, email=str(current_user))
