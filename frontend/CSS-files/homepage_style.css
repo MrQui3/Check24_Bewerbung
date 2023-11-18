@@ -20,6 +20,9 @@
     height: 50%;
 }
 
+#BtnPasswordAll {
+    height: 50%;
+}
 
 .alert-danger {
     visibility: hidden;

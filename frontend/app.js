@@ -98,12 +98,38 @@ function PasswordGetClick() {
 
             .then(resp => resp.json())
             .then(data => {
-                console.log(data);
+
                 if (data['detail'] === 'Invalid authentication credentials') {
                     document.getElementById('AlertPasswordGet').style.visibility = 'visible'
                 } else {
+                    console.log(data[0]);
                     document.getElementById('AlertPasswordGet').style.visibility = 'hidden'
+                    document.getElementById('PasswordTable').innerHTML = [
 
+                        '<table class="table">',
+                        '<thead>',
+                        '<tr>',
+                        '<th scope="col">Name</th>',
+                        '<th scope="col">Email</th>',
+                        '<th scope="col">Password</th>',
+                        '<th scope="col">Username</th>',
+                        '</tr>',
+                        '</thead>',
+                        '<tbody id="GettableBody">',
+                        '</tbody>',
+                        '</table>',
+
+                    ].join('')
+                    for (let i = 0; i < data.length; i++) {
+                        document.getElementById('GettableBody').innerHTML += [
+                            '<tr>',
+                            '<td>' + data[i]['name'] + '</td>',
+                            '<td>' + data[i]['email'] + '</td>',
+                            '<td>' + data[i]['password'] + '</td>',
+                            '<td>' + data[i]['username'] + '</td>',
+                            '</tr>',
+                        ].join('')
+                    }
                 }
             });
     }
@@ -201,6 +227,7 @@ function AccountCreateClick() {
                     });
 
 
+
             })
 
     }
@@ -252,4 +279,9 @@ function LoginClick() {
                 }
             })
     }
+}
+
+function PasswordAllClick() {
+
+
 }
