@@ -68,6 +68,11 @@ function PasswordCreateClick() {
         .then(resp => resp.json())
         .then(data => {
             console.log(data);
+            if (data['detail'] === 'Invalid authentication credentials') {
+                document.getElementById('AlertPasswordCreate').style.visibility = 'visible'
+            } else {
+                document.getElementById('AlertPasswordCreate').style.visibility = 'hidden'
+            }
         });
 
 
@@ -94,6 +99,12 @@ function PasswordGetClick() {
             .then(resp => resp.json())
             .then(data => {
                 console.log(data);
+                if (data['detail'] === 'Invalid authentication credentials') {
+                    document.getElementById('AlertPasswordGet').style.visibility = 'visible'
+                } else {
+                    document.getElementById('AlertPasswordGet').style.visibility = 'hidden'
+
+                }
             });
     }
 }
@@ -115,6 +126,11 @@ function PasswordDelClick() {
             .then(resp => resp.json())
             .then(data => {
                 console.log('password_deleted');
+                if (data['detail'] === 'Invalid authentication credentials') {
+                    document.getElementById('AlertPasswordDel').style.visibility = 'visible'
+                } else {
+                    document.getElementById('AlertPasswordDel').style.visibility = 'hidden'
+                }
             });
     }
 }
@@ -154,7 +170,16 @@ function AccountCreateClick() {
                 'password': document.getElementById('floatingSignupPassword').value,
             })
         })
-            .then(resp => resp.json())
+            .catch(error => {
+                console.log('error')
+            })
+            .then(resp => {
+                resp.json()
+                if (resp.status === 400) {
+                    console.log('error')
+                    return 0
+                }
+            })
             .then(data => {
                 console.log('signed up')
 
@@ -176,8 +201,8 @@ function AccountCreateClick() {
                     });
 
 
+            })
 
-            });
     }
 }
 
@@ -215,14 +240,16 @@ function LoginClick() {
                 'username': document.getElementById('floatingLoginEmail').value,
                 'password': document.getElementById('floatingLoginPasssword').value,
             })
-        })
-            .then(resp => resp.json())
+        }).then(resp => resp.json())
             .then(data => {
+                console.log(data);
+                if (data['detail'] === 'Incorrect username or password') {
+                    document.getElementById('AlterLoginModal').style.visibility = 'visible'
+                } else {
                 token = data['access_token']
-                console.log('logged in')
                 key = data['key']
-            });
-
-
+                    document.getElementById('AlterLoginModal').style.visibility = 'hidden'
+                }
+            })
     }
 }

@@ -51,6 +51,9 @@
                   </div>
                 </div>
                 <div class="modal-footer">
+                  <div class="alert alert-danger" role="alert" id="AlterLoginModal">
+                    Invalid Email or Password
+                  </div>
                   <button type="button" class="btn btn-primary" onclick=LoginClick()>Login</button>
                 </div>
               </div>
@@ -119,9 +122,14 @@
               <label for="floatingPasswordCreate">Password</label>
             </div>
             <p></p>
-            <button type="button" class="btn btn-primary" id="BtnPasswordCreate" onclick="PasswordCreateClick()">
+            <div class="button_and_alter">
+              <button type="button" class="btn btn-primary" id="BtnPasswordCreate" onclick="PasswordCreateClick()">
               Create
-            </button>
+              </button>
+              <div class="alert alert-danger" role="alert" id="AlertPasswordCreate">
+                Unauthorized. Please log in!
+              </div>
+            </div>
           </div>
         </div>
   </div>
@@ -141,7 +149,18 @@
               <input type="password_name" class="form-control" id="floatingPassswordName" placeholder="passwordname">
               <label for="floatingPassswordName">Passwords Name</label>
               <p></p>
-              <button type="button" class="btn btn-primary" onclick="PasswordGetClick()">Search</button>
+              <div class="button_and_alter">
+                <button type="button" class="btn btn-primary" onclick="PasswordGetClick()" id="BtnPasswordGet">Search
+                </button>
+                <div class="alert alert-danger" role="alert" id="AlertPasswordGet">
+                  Unauthorized. Please log in!
+                </div>
+              </div>
+              <p></p>
+              <p></p>
+              <div id="PasswordTable">
+
+              </div>
             </div>
           </div>
         </div>
@@ -175,7 +194,13 @@
             <input type="deleting_name" class="form-control " id="floatingDeletingName" placeholder="deletename">
             <label for="floatingDeletingName">Passwords Name</label>
             <p></p>
-            <button type="button" class="btn btn-danger" onclick="PasswordDelClick()">Delete</button>
+            <div class="button_and_alter">
+              <button type="button" class="btn btn-danger" onclick="PasswordDelClick()" id="BtnPasswordDel">Delete
+              </button>
+              <div class="alert alert-danger" role="alert" id="AlertPasswordDel">
+                Unauthorized. Please log in!
+              </div>
+            </div>
           </div>
         </div>
       </div>
