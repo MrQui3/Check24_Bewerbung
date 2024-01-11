@@ -282,6 +282,49 @@ function LoginClick() {
 }
 
 function PasswordAllClick() {
+    fetch('http://127.0.0.1:8000/test/?key=' + key, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        }
+    })
 
+        .then(resp => resp.json())
+        .then(data => {
+
+            if (data['detail'] === 'Invalid authentication credentials') {
+                document.getElementById('AlertPasswordAll').style.visibility = 'visible'
+            } else {
+                console.log(data[0]);
+                document.getElementById('AlertPasswordAll').style.visibility = 'hidden'
+                document.getElementById('AllPasswordTable').innerHTML = [
+
+                    '<table class="table">',
+                    '<thead>',
+                    '<tr>',
+                    '<th scope="col">Name</th>',
+                    '<th scope="col">Email</th>',
+                    '<th scope="col">Password</th>',
+                    '<th scope="col">Username</th>',
+                    '</tr>',
+                    '</thead>',
+                    '<tbody id="GettableBody">',
+                    '</tbody>',
+                    '</table>',
+
+                ].join('')
+                for (let i = 0; i < data.length; i++) {
+                    document.getElementById('GettableBody').innerHTML += [
+                        '<tr>',
+                        '<td>' + data[i]['name'] + '</td>',
+                        '<td>' + data[i]['email'] + '</td>',
+                        '<td>' + data[i]['password'] + '</td>',
+                        '<td>' + data[i]['username'] + '</td>',
+                        '</tr>',
+                    ].join('')
+                }
+            }
+        });
 
 }

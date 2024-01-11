@@ -40,3 +40,7 @@ def delete_user_password(db: Session, password_name: str, user_id: int):
     db.delete(db_password)
     db.commit()
     return db_password
+
+
+def get_all_passwords(db: Session, user_id: int):
+    return db.query(models.Password).filter(models.Password.owner_id == user_id).all()

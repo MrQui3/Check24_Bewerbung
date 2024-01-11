@@ -62,12 +62,19 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
 
 
 @app.post("/test/")
-async def root(current_user: Annotated[User, Depends(get_current_user)], password_name: str,
+async def root(current_user: Annotated[User, Depends(get_current_user)], key: str,
                db: Session = Depends(get_db)):
+    b_key = []
+    for i in key.split():
+        b_key.append(int(i))
+
     user = crud.get_user_by_email(db, email=str(current_user))
-    password_name = password_name.lower()
-    password_name = password_name.strip()
-    return crud.delete_user_password(db=db, password_name=password_name, user_id=user.id)
+    passwords = crud.get_all_passwords(db, user_id=user.id)
+    for password in passwords:
+        password.password = binascii.a2b_hex(password.password)
+        cipher = AES.new(bytes(b_key), AES.MODE_EAX, nonce=nonce)
+        password.password = str(cipher.decrypt(password.password).decode())
+    return passwords
 
 
 @app.post("/token")
