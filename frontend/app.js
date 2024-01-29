@@ -1,6 +1,3 @@
-let key = []
-let token = ''
-
 
 function PasswordCreateClick() {
 
@@ -50,33 +47,7 @@ function PasswordCreateClick() {
     }
 
 
-    fetch('http://127.0.0.1:8000/users/passwords/?key=' + key, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
-        },
-        body: JSON.stringify({
-            'name': document.getElementById('floatingNameCreate').value,
-            'password': document.getElementById('floatingPasswordCreate').value,
-            'email': document.getElementById('floatingEmailCreate').value,
-            'username': document.getElementById('floatingUsernameCreate').value
-        })
-
-
-    })
-        .then(resp => resp.json())
-        .then(data => {
-            console.log(data);
-            if (data['detail'] === 'Invalid authentication credentials') {
-                document.getElementById('AlertPasswordCreate').style.visibility = 'visible'
-            } else {
-                document.getElementById('AlertPasswordCreate').style.visibility = 'hidden'
-            }
-        });
-
-
-
+    fetch('http://127.0.0.1:8000/test')
 }
 
 
@@ -102,7 +73,6 @@ function PasswordGetClick() {
                 if (data['detail'] === 'Invalid authentication credentials') {
                     document.getElementById('AlertPasswordGet').style.visibility = 'visible'
                 } else {
-                    console.log(data[0]);
                     document.getElementById('AlertPasswordGet').style.visibility = 'hidden'
                     document.getElementById('PasswordTable').innerHTML = [
 
@@ -151,7 +121,6 @@ function PasswordDelClick() {
 
             .then(resp => resp.json())
             .then(data => {
-                console.log('password_deleted');
                 if (data['detail'] === 'Invalid authentication credentials') {
                     document.getElementById('AlertPasswordDel').style.visibility = 'visible'
                 } else {
@@ -197,19 +166,15 @@ function AccountCreateClick() {
             })
         })
             .catch(error => {
-                console.log('error')
             })
             .then(resp => {
                 resp.json()
                 if (resp.status === 400) {
-                    console.log('error')
                     return 0
                 }
             })
             .then(data => {
-                console.log('signed up')
-
-
+                console.log(data)
                 fetch('http://127.0.0.1:8000/token', {
                     method: 'POST',
                     headers: {
@@ -222,12 +187,8 @@ function AccountCreateClick() {
                 })
                     .then(resp => resp.json())
                     .then(data => {
-                        token = data['access_token']
-                        key = data['key']
+                        console.log(data)
                     });
-
-
-
             })
 
     }
@@ -269,7 +230,6 @@ function LoginClick() {
             })
         }).then(resp => resp.json())
             .then(data => {
-                console.log(data);
                 if (data['detail'] === 'Incorrect username or password') {
                     document.getElementById('AlterLoginModal').style.visibility = 'visible'
                 } else {
@@ -277,12 +237,18 @@ function LoginClick() {
                 key = data['key']
                     document.getElementById('AlterLoginModal').style.visibility = 'hidden'
                 }
+                document.getElementById('LoginButton').remove()
+                document.getElementById('SignupButton').remove()
+                document.getElementById('WelcomeText').textContent = "Welcome " + document.getElementById('floatingLoginEmail').value
+                document.getElementById('WelcomeText').style.visibility = 'visible'
+                document.getElementById('LoginModal').modal('hide');
             })
     }
 }
 
+
 function PasswordAllClick() {
-    fetch('http://127.0.0.1:8000/test/?key=' + key, {
+    fetch('http://127.0.0.1:8000/all_passwords/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -292,11 +258,10 @@ function PasswordAllClick() {
 
         .then(resp => resp.json())
         .then(data => {
-
+            console.log(data)
             if (data['detail'] === 'Invalid authentication credentials') {
                 document.getElementById('AlertPasswordAll').style.visibility = 'visible'
             } else {
-                console.log(data[0]);
                 document.getElementById('AlertPasswordAll').style.visibility = 'hidden'
                 document.getElementById('AllPasswordTable').innerHTML = [
 

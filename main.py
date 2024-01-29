@@ -1,7 +1,6 @@
 import binascii
 from hashlib import pbkdf2_hmac
-from typing import Annotated, Union
-from datetime import datetime, timedelta
+from typing import Annotated
 
 from Crypto.Cipher import AES
 from fastapi import Depends, FastAPI, HTTPException, status, Request
@@ -29,6 +28,7 @@ def get_db():
 
 origins = [
     "http://localhost:63342",
+    "http://localhost:3000",
 ]
 
 app.add_middleware(
@@ -46,7 +46,6 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 nonce = b'\xd1\xbb\xed\xbe`O\x8es\t\xad\xff \xe3\xcb}$'
 
 class User(BaseModel):
-    username: str
     email: str
 
 
@@ -61,19 +60,17 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     return user
 
 
-@app.post("/test/")
-async def root(current_user: Annotated[User, Depends(get_current_user)], key: str,
+@app.get("/test")
+async def test():
+    return 'test'
+
+
+@app.post("/all_passwords/")
+async def all_passwords(current_user: Annotated[User, Depends(get_current_user)],
                db: Session = Depends(get_db)):
-    b_key = []
-    for i in key.split():
-        b_key.append(int(i))
 
     user = crud.get_user_by_email(db, email=str(current_user))
     passwords = crud.get_all_passwords(db, user_id=user.id)
-    for password in passwords:
-        password.password = binascii.a2b_hex(password.password)
-        cipher = AES.new(bytes(b_key), AES.MODE_EAX, nonce=nonce)
-        password.password = str(cipher.decrypt(password.password).decode())
     return passwords
 
 
@@ -97,18 +94,14 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     return crud.create_user(db=db, user=user, password=pwd_context.hash(user.password))
 
 
+
 @app.post("/users/passwords/", response_model=schemas.Password)
 def create_password_for_user(current_user: Annotated[User, Depends(get_current_user)], password: schemas.PasswordCreate,
-                             key: str, db: Session = Depends(get_db)):
-    b_key = []
-    for i in key.split():
-        b_key.append(int(i))
+                             db: Session = Depends(get_db)):
+
 
 
     user = crud.get_user_by_email(db, email=str(current_user))
-    cipher = AES.new(bytes(b_key), AES.MODE_EAX, nonce=nonce)
-    password.password = cipher.encrypt(password.password.encode("utf-8"))
-    password.password = binascii.b2a_hex(password.password).decode("utf-8").strip()
     password.name = password.name.strip()
     password.name = password.name.lower()
     return crud.create_user_password(db=db, password=password, user_id=user.id)
@@ -116,6 +109,7 @@ def create_password_for_user(current_user: Annotated[User, Depends(get_current_u
 
 @app.post("/password_delete/")
 def delete_password_for_user(current_user: Annotated[User, Depends(get_current_user)], password_name: str,
+                             request: Request,
                              db: Session = Depends(get_db)):
     user = crud.get_user_by_email(db, email=str(current_user))
     password_name = password_name.lower()
@@ -123,19 +117,11 @@ def delete_password_for_user(current_user: Annotated[User, Depends(get_current_u
     return crud.delete_user_password(db=db, password_name=password_name, user_id=user.id)
 
 
-@app.post("/passwords/")
-def read_passwords(current_user: Annotated[User, Depends(get_current_user)], password_name: str, key: str,
+@app.post("/password/")
+def find_password(current_user: Annotated[User, Depends(get_current_user)], password_name: str,
                    db: Session = Depends(get_db)):
-    b_key = []
-    for i in key.split():
-        b_key.append(int(i))
-
     user = crud.get_user_by_email(db, email=str(current_user))
     password_name = password_name.lower()
     password_name = password_name.strip()
     passwords = crud.get_passwords(db, password_name=password_name, user_id=user.id)
-    for password in passwords:
-        password.password = binascii.a2b_hex(password.password)
-        cipher = AES.new(bytes(b_key), AES.MODE_EAX, nonce=nonce)
-        password.password = str(cipher.decrypt(password.password).decode())
     return passwords
