@@ -13,9 +13,8 @@ To run Passwordsafe_Website locally, follow these steps:
 
 1. Clone the repository:
    `git clone https://github.com/MrQui3/Passwordsafe_Website.git`
-2. Install react: `npm install`
-3. Install requirements(for Backend)
-4. Starting Frontend:
+2. Install python requirements `pip install -r requirements.txt`
+3. Starting Frontend:
     1. go in to folder: `cd ./nextjs-frontend/`
     2. starting website: `npm run dev`
   
