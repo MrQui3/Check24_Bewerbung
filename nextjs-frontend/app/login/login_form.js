@@ -1,0 +1,69 @@
+'use client'
+import {Input} from "../../components/ui/input";
+import {Button} from "../../components/ui/button";
+import {Label} from "../../components/ui/label";
+import pbkdf2 from "@/app/pbkdf2";
+
+function LoginForm() {
+    function login_function() {
+
+        fetch('http://127.0.0.1:8000/token', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                'username': document.getElementById('email').value,
+                'password': document.getElementById('password').value,
+            })
+        })
+            .then(resp => resp.json())
+            .then(data => {
+                console.log(data)
+                sessionStorage.setItem('email', document.getElementById('email').value)
+                sessionStorage.setItem('token', data['access_token'])
+                pbkdf2(document.getElementById('password').value, document.getElementById('email').value, 100000, 16).then(value => console.log(value))
+                window.location.href = '/dashboard'
+            });
+
+        fetch('http://127.0.0.1:8000/all_passwords/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+            }
+        })
+
+            .then(resp => resp.json())
+            .then(data => {
+                sessionStorage.setItem('passwords', data)
+            });
+
+
+    }
+
+    return (
+        <div className="space-y-4">
+            <div className="space-y-2">
+                <Label htmlFor="username">Email</Label>
+                <Input id="email" placeholder="Email" required/>
+            </div>
+            <div className="space-y-2">
+                <div className="flex items-center">
+                    <Label htmlFor="password">Password</Label>
+                </div>
+                <Input id="password" required type="password"/>
+            </div>
+            <Button className="w-full bg-gray-900 text-gray-50 hover:bg-gray-500" onClick={() => login_function()}>
+                Login
+            </Button>
+        </div>
+    )
+}
+
+export default LoginForm;
+
+
+
+
+
