@@ -6,6 +6,7 @@ Passwordsafe_Website is a simple web application built to  store and manage your
 * **User Authentication:** Users are required to create an account and log in to access their passsword vault
 * **Intuitive Interface:** The web application is designed to be easy to use, with simple navigation and clear instructions
 * **Password Generator:**  Users can generate strong, random passwords directly within the application, helping them create secure passwords for their accounts.
+* **Creating/Deleting: ** Users can easyl create and delete their passwords
 
 ## Installation
 ### NextJs and Python is required
