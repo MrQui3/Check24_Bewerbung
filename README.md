@@ -1,5 +1,8 @@
 # Passwordsafe
-Passwordsafe_Website is a simple web application built to  store and manage your passwords online. It provides a user-friendly interface for adding and deleting passwords. Securing your passwords safely will follow soon. For more detail, look in the main.py
+Passwordsafe_Website is a simple web application built to  store and manage your passwords online. It provides a user-friendly interface for adding and deleting passwords. Securing your passwords safely will follow soon.  
+
+#### For more detail to the backend look in the backend/main.py. 
+#### For more detail to the frontend look in the nexjs-frontend/app/page.tsx.
 
 
 ## Features
