@@ -1,8 +1,6 @@
-import binascii
 from hashlib import pbkdf2_hmac
 from typing import Annotated
 
-from Crypto.Cipher import AES
 from fastapi import Depends, FastAPI, HTTPException, status, Request
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from passlib.context import CryptContext
@@ -10,10 +8,10 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 
-import crud
-import models
-import schemas
-from database import SessionLocal, engine
+from backend import crud
+from backend import models
+from backend import schemas
+from backend.database import SessionLocal, engine
 
 models.Base.metadata.create_all(bind=engine)
 app = FastAPI()

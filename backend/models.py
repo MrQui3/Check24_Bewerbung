@@ -1,4 +1,4 @@
-from database import Base
+from backend.database import Base
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 class User(Base):
     __tablename__ = "users"
