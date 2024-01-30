@@ -20,7 +20,7 @@ To run Passwordsafe_Website locally, follow these steps:
   
 ## Technolgies Used
 * **Frontend:** NextJs, Tailwind
-* **Backend:** Python3, Fast-Api, SQlite
+* **Backend:** Python3, Fast-Api, SQLAlchemy
 
 ## Future Features
 * encrypting/decrypting passwords
