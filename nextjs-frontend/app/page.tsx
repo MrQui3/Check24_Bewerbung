@@ -1,3 +1,14 @@
+/*
+page.tsx handels the main page of the application. It is the first page the user sees when he visits the website.
+login/page.tsx handels the login page of the application. It is the page the user sees when he logs in.
+signup/page.tsx handels the signup page of the application. It is the page the user sees when he signs up.
+dashboard/page.tsx handels the dashboard page of the application. It is the page the user sees his passwords.
+
+
+Support page and Privacy Policy page are not implemented yet.
+UI is not final yet.
+ */
+
 import Link from "next/link"
 import '@/app/global.css';
 

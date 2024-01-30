@@ -1,3 +1,9 @@
+/*
+Handle the password dashboard, where the user can create, delete and view his passwords
+encrypting and decrypting the passwords will follow in the future
+sharing passwords with other users will follow in the future
+searching for passwords will follow in the future(backend is already implemented)
+*/
 'use client'
 import {TableHead, TableRow, TableHeader, TableCell, TableBody, Table} from "@/components/ui/table"
 import {

@@ -1,3 +1,8 @@
+/*
+Handle the sign page
+the signup form is used a component so is a handled on the client side to ensure the saftey of the signup credentials
+the token and user email is stored in the local storage, to used it later to login
+*/
 import '@/app/global.css';
 
 import SignupForm from './signup_form'
