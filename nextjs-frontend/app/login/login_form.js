@@ -22,7 +22,6 @@ function LoginForm() {
                 console.log(data)
                 sessionStorage.setItem('email', document.getElementById('email').value)
                 sessionStorage.setItem('token', data['access_token'])
-                pbkdf2(document.getElementById('password').value, document.getElementById('email').value, 100000, 16).then(value => console.log(value))
                 window.location.href = '/dashboard'
             });
 

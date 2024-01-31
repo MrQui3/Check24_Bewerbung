@@ -62,7 +62,6 @@ export default function Password_Dashboard() {
 
 
     function Create_Password(value) {
-        console.log(sessionStorage.getItem('key').charAt(0))
         if (document.getElementById('name').value == '') {
             document.getElementById('answermodal').innerText = 'Please add a email address'
             document.getElementById('answermodal').className = 'text-red-700'
@@ -126,6 +125,18 @@ export default function Password_Dashboard() {
             });
     }
 
+    function generate_password() {
+        var length = 12,
+            charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!§$%&/()=?*+#-_.:,;<>",
+            retVal = "";
+        for (var i = 0, n = charset.length; i < length; ++i) {
+            retVal += charset.charAt(Math.floor(Math.random() * n));
+
+        }
+        document.getElementById('password').value = retVal;
+        document.getElementById('password').type = ''
+    }
+
 
     return (
         <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
@@ -157,6 +168,9 @@ export default function Password_Dashboard() {
                             <div className="space-y-2">
                                 <Label htmlFor="password">Password</Label>
                                 <Input id="password" placeholder="Enter your password" type="password"/>
+                                <Button onClick={() => generate_password()}
+                                        className='bg-gray-900 text-gray-50 hover:bg-gray-500'>Generate
+                                    password</Button>
                             </div>
                         </div>
                         <DialogFooter>
@@ -178,11 +192,11 @@ export default function Password_Dashboard() {
                     <TableBody id='tablebody'>
                         {passwordsData.map((item, index) => (
                             // eslint-disable-next-line react/jsx-key
-                            <TableRow t={index}>
+                            <TableRow key={index}>
                                 {columns.map((column) => (
                                     // eslint-disable-next-line react/jsx-key
                                     <TableCell
-                                        t={`<span class="math-inline">\{column\.Header\}\-</span>{index}`}>
+                                        key={`<span class="math-inline">\{column\.Header\}\-</span>{index}`}>
                                         {item[column.accessor]}
                                     </TableCell>
                                 ))}
