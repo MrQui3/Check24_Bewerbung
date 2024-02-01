@@ -5,3 +5,4 @@ pycryptodome==3.19.0
 fastapi==0.103.1
 uvicorn==0.22.0
 bcrypt==4.0.1
+python-multipart==0.0.6
