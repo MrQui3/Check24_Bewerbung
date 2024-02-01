@@ -20,7 +20,8 @@ To run Passwordsafe_Website locally, follow these steps:
 2. Install python requirements `pip install -r requirements.txt`
 3. Starting Frontend:
     1. go in to folder: `cd ./nextjs-frontend/`
-    2. starting website: `npm run dev`
+    2. install all necessarys dependencies: `cd install next`
+    3. starting website: `npm run dev`
   
 ## Technolgies Used
 * **Frontend:** NextJs, Tailwind
