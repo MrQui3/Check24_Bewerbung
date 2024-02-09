@@ -6,7 +6,7 @@ the token and user email is stored in the local storage, to used it later to log
 
 import Form from './login_form'
 import Link from "next/link"
-import '@/app/global.css';
+import '../global.css';
 
 
 export default function Component() {

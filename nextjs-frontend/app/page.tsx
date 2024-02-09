@@ -10,7 +10,7 @@ UI is not final yet.
  */
 
 import Link from "next/link"
-import '@/app/global.css';
+import './global.css';
 
 export default function Component() {
     return (

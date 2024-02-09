@@ -1,5 +1,5 @@
 import Link from "next/link"
-import '@/app/global.css';
+import '../global.css';
 import {Input} from "@/components/ui/input"
 import {
     DropdownMenuTrigger,
