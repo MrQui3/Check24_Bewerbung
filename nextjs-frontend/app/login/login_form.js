@@ -24,21 +24,6 @@ function LoginForm() {
                 sessionStorage.setItem('token', data['access_token'])
                 window.location.href = '/dashboard'
             });
-
-        fetch('http://127.0.0.1:8000/all_passwords/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-            }
-        })
-
-            .then(resp => resp.json())
-            .then(data => {
-                sessionStorage.setItem('passwords', data)
-            });
-
-
     }
 
     return (
