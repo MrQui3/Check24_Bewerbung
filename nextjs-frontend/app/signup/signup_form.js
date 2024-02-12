@@ -7,7 +7,7 @@ import pbkdf2 from '@/app/pbkdf2'
 export default function SignupForm() {
 
     function signup_function() {
-        fetch('http://127.0.0.1:8000/users/', {
+        fetch('http://212.132.69.126:8000/users/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -26,7 +26,7 @@ export default function SignupForm() {
                 }
             })
             .then(data => {
-                fetch('http://127.0.0.1:8000/token', {
+                fetch('http://212.132.69.126:8000/token', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
@@ -44,16 +44,6 @@ export default function SignupForm() {
                         window.location.href = '/dashboard'
                     });
             })
-        fetch('http://127.0.0.1:8000/all_passwords/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-            }
-        }).then(resp => resp.json())
-            .then(data => {
-                sessionStorage.setItem('passwords', data)
-            });
     }
 
     return (

@@ -7,7 +7,7 @@ import pbkdf2 from "@/app/pbkdf2";
 function LoginForm() {
     function login_function() {
 
-        fetch('http://127.0.0.1:8000/token', {
+        fetch('http://212.132.69.126:8000/token', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
