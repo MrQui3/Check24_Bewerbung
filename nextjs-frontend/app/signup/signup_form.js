@@ -7,7 +7,7 @@ import pbkdf2 from '@/app/pbkdf2'
 export default function SignupForm() {
 
     function signup_function() {
-        fetch('http://212.132.69.126:8000/users/', {
+        fetch(api_address + '/users/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -26,7 +26,7 @@ export default function SignupForm() {
                 }
             })
             .then(data => {
-                fetch('http://212.132.69.126:8000/token', {
+                fetch(api_address + '/token', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'

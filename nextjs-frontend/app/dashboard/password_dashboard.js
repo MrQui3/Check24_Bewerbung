@@ -45,7 +45,7 @@ var CryptoJS = require("crypto-js");
 export default function Password_Dashboard() {
 
     useEffect(() => {
-        fetch('http://212.132.69.126:8000/all_passwords/', {
+        fetch(api_address + '/all_passwords/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ export default function Password_Dashboard() {
         } else {
             document.getElementById('answermodal').innerText = 'Password created'
             document.getElementById('answermodal').className = 'text-green-700'
-            fetch('http://127.0.0.1:8000/users/passwords/', {
+            fetch(api_address + '/users/passwords/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -86,7 +86,7 @@ export default function Password_Dashboard() {
             })
         }
 
-        fetch('http://212.132.69.126:8000/all_passwords/', {
+        fetch(api_address + '/all_passwords/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -100,7 +100,7 @@ export default function Password_Dashboard() {
     }
 
     function delete_password(index) {
-        fetch('http://212.132.69.126:8000/password_delete/?password_name=' + passwordsData[index]['name'], {
+        fetch(api_address + '/password_delete/?password_name=' + passwordsData[index]['name'], {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -112,7 +112,7 @@ export default function Password_Dashboard() {
             .then(data => {
 
             })
-        fetch('http://212.132.69.126:8000/all_passwords/', {
+        fetch(api_address + '/all_passwords/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
