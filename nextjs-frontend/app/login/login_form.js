@@ -7,7 +7,7 @@ import pbkdf2 from "@/app/pbkdf2";
 function LoginForm() {
     function login_function() {
 
-        fetch(api_address + 'token', {
+        fetch('http://127.0.0.1:8000/token', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -19,8 +19,6 @@ function LoginForm() {
         })
             .then(resp => resp.json())
             .then(data => {
-                console.log(data)
-                sessionStorage.setItem('email', document.getElementById('email').value)
                 sessionStorage.setItem('token', data['access_token'])
                 window.location.href = '/dashboard'
             });

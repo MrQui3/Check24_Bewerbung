@@ -45,7 +45,6 @@ def get_db():
 
 # Allowing CORS
 origins = [
-    "http://localhost:63342",
     "http://localhost:3000",
 ]
 app.add_middleware(
@@ -95,23 +94,21 @@ async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: 
         raise HTTPException(status_code=400, detail="Incorrect username or password")
     if not pwd_context.verify(form_data.password, user.hashed_password):
         raise HTTPException(status_code=400, detail="Incorrect username or password")
-    key = pbkdf2_hmac("sha256", form_data.password.encode(), form_data.username.encode(), 100000, 16)
-    key = list(key)
-    key = ' '.join(str(e) for e in key)
-    return {"access_token": user.email, "token_type": "bearer", 'key': key}
+    return {"access_token": user.email, "token_type": "bearer"}
 
 
 # Api fetch to create user
-@app.post("/users/", response_model=schemas.User)
+@app.post("/users/")
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user = crud.get_user_by_email(db, email=user.email)
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
-    return crud.create_user(db=db, user=user, password=pwd_context.hash(user.password))
+    else:
+        return crud.create_user(db=db, user=user, password=pwd_context.hash(user.password))
 
 
 # Api fetch to create a password
-@app.post("/users/passwords/", response_model=schemas.Password)
+@app.post("/users/passwords/")
 def create_password_for_user(current_user: Annotated[User, Depends(get_current_user)], password: schemas.PasswordCreate,
                              db: Session = Depends(get_db)):
     user = crud.get_user_by_email(db, email=str(current_user))

@@ -45,7 +45,7 @@ var CryptoJS = require("crypto-js");
 export default function Password_Dashboard() {
 
     useEffect(() => {
-        fetch(api_address + '/all_passwords/', {
+        fetch('http://127.0.0.1:8000/all_passwords/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -63,7 +63,7 @@ export default function Password_Dashboard() {
 
     function Create_Password(value) {
         if (document.getElementById('name').value == '') {
-            document.getElementById('answermodal').innerText = 'Please add a email address'
+            document.getElementById('answermodal').innerText = 'Please add a name'
             document.getElementById('answermodal').className = 'text-red-700'
         } else if (document.getElementById('password').value == '') {
             document.getElementById('answermodal').innerText = 'Please add a password'
@@ -71,7 +71,7 @@ export default function Password_Dashboard() {
         } else {
             document.getElementById('answermodal').innerText = 'Password created'
             document.getElementById('answermodal').className = 'text-green-700'
-            fetch(api_address + '/users/passwords/', {
+            fetch('http://127.0.0.1:8000/users/passwords/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -86,7 +86,7 @@ export default function Password_Dashboard() {
             })
         }
 
-        fetch(api_address + '/all_passwords/', {
+        fetch('http://127.0.0.1:8000/all_passwords/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -100,7 +100,7 @@ export default function Password_Dashboard() {
     }
 
     function delete_password(index) {
-        fetch(api_address + '/password_delete/?password_name=' + passwordsData[index]['name'], {
+        fetch('http://127.0.0.1:8000/password_delete/?password_name=' + passwordsData[index]['name'], {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -112,7 +112,7 @@ export default function Password_Dashboard() {
             .then(data => {
 
             })
-        fetch(api_address + '/all_passwords/', {
+        fetch('http://127.0.0.1:8000/all_passwords/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

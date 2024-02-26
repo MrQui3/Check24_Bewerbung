@@ -54,10 +54,6 @@ export default function Component() {
             </div>
             <div className="flex flex-col">
                 <header className="flex h-14 lg:h-[60px] items-center gap-4 border-b  px-6 bg-gray-50">
-                    <Link className="lg:hidden" href="#">
-                        <LockIcon className="h-6 w-6"/>
-                        <span className="sr-only">Home</span>
-                    </Link>
                     <div className="w-full flex-1">
                         <form>
                             <div className="relative">
@@ -86,9 +82,7 @@ export default function Component() {
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </header>
-
                 <Password_Dashboard/>
-
             </div>
         </div>
     )

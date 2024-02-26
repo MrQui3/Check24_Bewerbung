@@ -7,7 +7,7 @@ import pbkdf2 from '@/app/pbkdf2'
 export default function SignupForm() {
 
     function signup_function() {
-        fetch(api_address + '/users/', {
+        fetch('http://127.0.0.1:8000/users/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -23,27 +23,27 @@ export default function SignupForm() {
                 resp.json()
                 if (resp.status === 400) {
                     return 0
-                }
-            })
-            .then(data => {
-                fetch(api_address + '/token', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: new URLSearchParams({
-                        'username': document.getElementById('email').value,
-                        'password': document.getElementById('password').value,
+                } else {
+
+                    fetch('http://127.0.0.1:8000/token', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: new URLSearchParams({
+                            'username': document.getElementById('email').value,
+                            'password': document.getElementById('password').value,
+                        })
                     })
-                })
-                    .then(resp => resp.json())
-                    .then(data => {
-                        console.log(data)
-                        sessionStorage.setItem('email', document.getElementById('email').value)
-                        sessionStorage.setItem('token', data['access_token'])
-                        window.location.href = '/dashboard'
-                    });
+                        .then(resp => resp.json())
+                        .then(data => {
+                            sessionStorage.setItem('token', data['access_token'])
+                            window.location.href = '/dashboard'
+                        });
+                }
+
             })
+
     }
 
     return (
