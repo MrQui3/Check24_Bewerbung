@@ -19,8 +19,13 @@ function LoginForm() {
         })
             .then(resp => resp.json())
             .then(data => {
-                sessionStorage.setItem('token', data['access_token'])
-                window.location.href = '/dashboard'
+                console.log(data)
+                if (data['detail'] == "Incorrect username or password") {
+                    return 0
+                } else {
+                    sessionStorage.setItem('token', data['access_token'])
+                    window.location.href = '/dashboard'
+                }
             });
     }
 
