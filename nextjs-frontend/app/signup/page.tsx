@@ -26,9 +26,4 @@ export default function Component() {
             </div>
         </div>
     )
-
-    function handleSubmit() {
-        console.log('You clicked submit.');
-
-    }
 }
